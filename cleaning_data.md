@@ -35,4 +35,26 @@ DROP COLUMN searchkeyword;
 ALTER TABLE analytics
 DROP COLUMN userid;
 
+/*Checked columns with same name in diferent tables to see if they have same 
+values in rows*/
+
+SELECT COUNT(*)
+FROM products AS p
+LEFT JOIN sales_report AS sr
+ON p.sku = sr.productsku
+WHERE p.name = sr.name 
+	AND p.stocklevel = sr.stocklevel 
+	AND p.restockingLeadTime = sr.restockingLeadTime
+	AND p.sentimentScore = sr.sentimentScore
+	AND p.sentimentMagnitude = sr.sentimentMagnitude
+
+/* Dropped name, stocklevel, restockingleadtime, sentimentscore and sentimentmagnitude 
+from SALES_REPORT*/
+
+ALTER TABLE sales_report
+    DROP COLUMN name, 
+    DROP COLUMN stocklevel, 
+    DROP COLUMN restockingLeadTime, 
+    DROP COLUMN sentimentScore, 
+    DROP COLUMN sentimentMagnitude;
 
