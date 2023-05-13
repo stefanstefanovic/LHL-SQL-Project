@@ -10,6 +10,8 @@ What issues will you address by cleaning the data?
 Queries:
 Below, provide the SQL queries you used to clean your data.
 
+1. ***************
+
 /*This query returns rows in columns that have at least one value
 */
 SELECT *
@@ -58,3 +60,78 @@ ALTER TABLE sales_report
     DROP COLUMN sentimentScore, 
     DROP COLUMN sentimentMagnitude;
 
+
+/*Checked if there is a difference beetween SALES_BY_SKU and SALES_report tables*/
+
+--This query returns productSKU rows that don't exist in SALES_REPORT table
+SELECT 
+    sr.productsku, 
+    sr.total_ordered, 
+    sbs.productsku, 
+    sbs.total_ordered
+FROM sales_report AS sr
+FULL OUTER JOIN sales_by_sku AS sbs
+ON sr.productsku = sbs.productsku
+WHERE sr.productSKU IS Null
+
+
+
+2 ****************
+
+/*Changed TYPE from varchar to integer*/
+
+ALTER TABLE analytics
+ALTER column timeonsite TYPE bigint USING (timeonsite::bigint);
+
+--changed unitprice
+UPDATE analytics
+SET unit_price = (unit_price/1000000)
+
+3****************
+
+--Removed extra spaces from strings
+
+--products table
+UPDATE products
+SET name = TRIM(both ' ' FROM name)
+
+
+4 *************
+/*Checked columns for outliers or values that don't make sense*/
+
+SELECT 
+    MIN(stocklevel) as min_range, 
+    MAX(stocklevel) AS max_range, 
+    AVG(stocklevel)
+FROM products
+
+SELECT *
+FROM products
+ORDER BY orderedquantity DESC
+
+
+5************
+/*Connected tables (added primary and foreign keys to tables)*/
+
+--I first checked for unique values
+
+SELECT 
+    fullvisitorid, 
+    visitId 
+FROM all_sessions 
+WHERE fullvisitorid IN
+  (SELECT fullvisitorid 
+   FROM all_sessions 
+   GROUP BY fullvisitorid 
+   HAVING COUNT(*) > 1)
+ORDER BY visitid
+
+--Added primary key to products table
+
+ALTER TABLE products
+ADD PRIMARY KEY (sku);
+
+--Added foreign key to sales_report table
+
+ALTER TABLE sales_report
+ADD FOREIGN KEY (productsku) REFERENCES products(sku);
