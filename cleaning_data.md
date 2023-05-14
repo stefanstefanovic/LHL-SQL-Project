@@ -78,6 +78,11 @@ WHERE sr.productSKU IS Null
 
 2 ****************
 
+--Returns data types of all columns in that table
+SELECT *
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE table_name = 'products'
+
 /*Changed TYPE from varchar to integer*/
 
 ALTER TABLE analytics
