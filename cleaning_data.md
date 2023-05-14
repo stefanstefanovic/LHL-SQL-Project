@@ -86,6 +86,8 @@ JOIN analytics AS a ON
 	als.channelgrouping = a.channelgrouping AND
 	als.pageviews = a.pageviews
 
+
+
 2 ****************
 
 --Returns data types of all columns in that table
@@ -108,6 +110,14 @@ SET unit_price = (unit_price/1000000)
 --changed unitprice
 UPDATE all_sessions
 SET productprice = (productprice/1000000)
+
+--changed revenue
+UPDATE analytics
+SET revenue = (revenue/1000000)
+
+--changed revenue
+UPDATE all_sessions
+SET totaltransactionrevenue = (totaltransactionrevenue/1000000)
 
 3****************
 
