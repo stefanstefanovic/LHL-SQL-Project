@@ -88,6 +88,9 @@ WHERE table_name = 'products'
 ALTER TABLE analytics
 ALTER column timeonsite TYPE bigint USING (timeonsite::bigint);
 
+ALTER TABLE all_sessions
+ALTER column totaltransactionrevenue TYPE bigint USING (totaltransactionrevenue::bigint);
+
 --changed unitprice
 UPDATE analytics
 SET unit_price = (unit_price/1000000)
