@@ -92,6 +92,10 @@ ALTER column timeonsite TYPE bigint USING (timeonsite::bigint);
 UPDATE analytics
 SET unit_price = (unit_price/1000000)
 
+--changed unitprice
+UPDATE all_sessions
+SET productprice = (productprice/1000000)
+
 3****************
 
 --Removed extra spaces from strings
