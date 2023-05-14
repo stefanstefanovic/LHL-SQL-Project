@@ -74,7 +74,17 @@ FULL OUTER JOIN sales_by_sku AS sbs
 ON sr.productsku = sbs.productsku
 WHERE sr.productSKU IS Null
 
+--CHECKED tables all_sessions and Analytics for duplicate records
 
+SELECT *
+FROM all_sessions AS als
+JOIN analytics AS a ON
+	als.fullvisitorid = a.fullvisitorid AND
+	als.visitid = a.visitid AND
+	als.date = a.date AND
+	als.timeonsite = a.timeonsite AND
+	als.channelgrouping = a.channelgrouping AND
+	als.pageviews = a.pageviews
 
 2 ****************
 
