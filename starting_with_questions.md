@@ -1,14 +1,23 @@
-Answer the following questions and provide the SQL queries used to find the answer.
+# Answer the following questions and provide the SQL queries used to find the answer.
 
     
-**Question 1: Which cities and countries have the highest level of transaction revenues on the site?**
+## **Question 1: Which cities and countries have the highest level of transaction revenues on the site?**
 
 
-SQL Queries:
+### SQL Queries:
 
+**Query for Country**
+```
+SELECT 
+    country, 
+    SUM(totaltransactionrevenue) AS transaction_revenue
+FROM all_sessions
+WHERE totaltransactionrevenue IS NOT Null
+GROUP BY country
+ORDER BY transaction_revenue DESC;
+```
 
-
-For city:
+**Query for City**
 ```
 WITH city_cte AS (
 	SELECT 
@@ -26,31 +35,22 @@ GROUP BY city
 ORDER BY transaction_revenue DESC;
 ```
 
-For country:
-```
-SELECT 
-    country, 
-    SUM(totaltransactionrevenue) AS transaction_revenue
-FROM all_sessions
-WHERE totaltransactionrevenue IS NOT Null
-GROUP BY country
-ORDER BY transaction_revenue DESC;
-```
 
 
-Answer: 
+
+### Answer: 
 
 Out of the cities available in this database, San Francisco, Sunnyvale and Atlanta are the top 3 cities with the highest level of transaction revenue (all 3 of them are cities in the United States). The top 3 highest countries when it comes to the level of transaction revenue are the United States, Israel and Australia.
 
 
 
 
-**Question 2: What is the average number of products ordered from visitors in each city and country?**
+## **Question 2: What is the average number of products ordered from visitors in each city and country?**
 
 
-SQL Queries:
+### SQL Queries:
 
-City
+**Query for City**
 ```
 SELECT 
 	CASE
@@ -65,7 +65,8 @@ ON p.sku = als.productsku
 GROUP BY als.city
 ORDER BY average_oq DESC
 ```
-Country
+
+**Query for Country**
 ```
 SELECT 
 	CASE
@@ -80,19 +81,19 @@ GROUP BY als.country
 ORDER BY average_oq DESC
 ```
 
-Answer:
+### Answer:
 There are 252 cities on the list, with two cities from the United States in the top 3, Council Bluffs (USA), Cork (Ireland) and Bellflower(USA).
 There are 134 countries on the list, with Mali, Montenegro and Papua New Guinea in the top 3 places and Iceland and Rwanda at the bottom with 0 orders.
 
 
 
 
-**Question 3: Is there any pattern in the types (product categories) of products ordered from visitors in each city and country?**
+## **Question 3: Is there any pattern in the types (product categories) of products ordered from visitors in each city and country?**
 
 
-SQL Queries:
+### SQL Queries:
 
-Query for Country:
+**Query for Country**
 ```
 WITH all_sessions_clean AS (
     SELECT 
@@ -131,7 +132,7 @@ ORDER BY ordered_quantity_sum DESC
 LIMIT 10;
 ```
 
-Query for City:
+**Query for City**
 
 ```
 WITH all_sessions_clean AS (
@@ -172,7 +173,7 @@ ORDER BY ordered_quantity_sum DESC
 LIMIT 10;
 ```
 
-Answer:
+### Answer:
 
 **Country**
 
@@ -210,12 +211,12 @@ Patern in top 10 cities by the number of orders by product category shows that t
 
 
 
-**Question 4: What is the top-selling product from each city/country? Can we find any pattern worthy of noting in the products sold?**
+## **Question 4: What is the top-selling product from each city/country? Can we find any pattern worthy of noting in the products sold?**
 
 
-SQL Queries:
+### SQL Queries:
 
-Query for Country:
+**Query for Country**
 ```
 WITH all_sessions_clean AS (
     SELECT 
@@ -254,7 +255,7 @@ ORDER BY ordered_quantity_sum DESC
 LIMIT 10;
 ```
 
-Query for City:
+**Query for City**
 
 ```
 WITH all_sessions_clean AS (
@@ -295,7 +296,7 @@ ORDER BY ordered_quantity_sum DESC
 LIMIT 10;
 ```
 
-Answer:
+### Answer:
 
 **Country**
 
@@ -333,11 +334,11 @@ When we examine the rankings of the top ten countries based on the best-selling 
 
 
 
-**Question 5: Can we summarize the impact of revenue generated from each city/country?**
+## **Question 5: Can we summarize the impact of revenue generated from each city/country?**
 
-SQL Queries:
+### SQL Queries:
 
-Query for Country:
+**Query for Country**
 
 ```
 SELECT 
@@ -351,7 +352,7 @@ ORDER BY "Transaction Revenue" DESC;
 
 ```
 
-Query for City:
+**Query for City**
 
 ```
 SELECT 
@@ -364,9 +365,9 @@ GROUP BY city
 ORDER BY "Transaction Revenue" DESC;
 ```
 
-Answer:
+### Answer:
 
-Country:
+**Country** 
 
 According to available data, the United States has the most significant impact on revenue from the five countries we have data for. Customers from the United States are generating 92% of the revenue.
 
@@ -379,7 +380,7 @@ According to available data, the United States has the most significant impact o
 |Switzerland	|16	|0.11|
 
 
-City:
+**City**
 
 Results are a bit more diverse when it comes to the cities, where San Francisco is responsible for 19% of the revenue, followed by Sunnyvale (12%) and Atlanta (10%).
 
