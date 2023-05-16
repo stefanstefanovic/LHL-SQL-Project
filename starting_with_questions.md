@@ -337,10 +337,73 @@ When we examine the rankings of the top ten countries based on the best-selling 
 
 SQL Queries:
 
+Query for Country:
 
+```
+SELECT 
+    country AS "Country", 
+    SUM(totaltransactionrevenue) AS "Transaction Revenue",
+	ROUND(SUM(totaltransactionrevenue)/SUM(SUM(totaltransactionrevenue)) OVER () * 100, 2) AS "Transaction Revenue Rate by Country"
+FROM all_sessions
+WHERE totaltransactionrevenue IS NOT Null
+GROUP BY country
+ORDER BY "Transaction Revenue" DESC;
+
+```
+
+Query for City:
+
+```
+SELECT 
+    city AS "City", 
+    SUM(totaltransactionrevenue) AS "Transaction Revenue",
+	ROUND(SUM(totaltransactionrevenue)/SUM(SUM(totaltransactionrevenue)) OVER () * 100, 2) AS "Transaction Revenue Rate by City"
+FROM all_sessions
+WHERE totaltransactionrevenue IS NOT Null AND city != 'not available in demo dataset'
+GROUP BY city
+ORDER BY "Transaction Revenue" DESC;
+```
 
 Answer:
 
+Country:
+
+According to available data, the United States has the most significant impact on revenue from the five countries we have data for. Customers from the United States are generating 92% of the revenue.
+
+|Country	|Transaction Revenue	|Transaction Revenue Rate by Country|
+|--------|--------|-----|
+|United States	|13123	|92.1|
+|Israel	|602	|4.23|
+|Australia	|358	|2.51|
+|Canada	|149	|1.05|
+|Switzerland	|16	|0.11|
+
+
+City:
+
+Results are a bit more diverse when it comes to the cities, where San Francisco is responsible for 19% of the revenue, followed by Sunnyvale (12%) and Atlanta (10%).
+
+|City	|Transaction Revenue	|Transaction Revenue Rate by City|
+|-------|-----------|------|
+|San Francisco	|1561	19.12|
+|Sunnyvale	|991	|12.14|
+|Atlanta	|853	|10.45|
+|Palo Alto	|608	|7.45|
+|Tel Aviv-Yafo	|602	|7.37|
+|New York	|593	|7.26|
+|Los Angeles	|479	|5.87|
+|Mountain View	|479	|5.87|
+|Chicago	|448	|5.49|
+|Sydney	|358	|4.38|
+|Seattle	|358	|4.38|
+|San Jose	|262	|3.21|
+|Nashville	|157	|1.92|
+|Austin	|157	|1.92|
+|San Bruno	|103	|1.26|
+|Toronto	|82	|1|
+|Houston	|38	|0.47|
+|Columbus	|21	|0.26|
+|Zurich	|16	|0.2|
 
 
 
