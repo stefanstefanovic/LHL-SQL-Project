@@ -11,7 +11,9 @@ SQL Queries:
 For city:
 ```
 WITH city_cte AS (
-	SELECT city, totaltransactionrevenue
+	SELECT 
+        city, 
+        totaltransactionrevenue
 	FROM all_sessions
 	WHERE city NOT IN ('(not set)', 'not available in demo dataset'))
 
@@ -90,7 +92,7 @@ There are 134 countries on the list, with Mali, Montenegro and Papua New Guinea 
 
 SQL Queries:
 
-Query for country:
+Query for Country:
 ```
 WITH all_sessions_clean AS (
     SELECT 
@@ -128,23 +130,8 @@ WHERE rn = 1
 ORDER BY ordered_quantity_sum DESC
 LIMIT 10;
 ```
-In top 10 countries the most popular product group was "Home/Shop by Brand/YouTube/".
 
-Country	 |Product Category	|Sum of Ordered Quantity
-|--------------|---------------------------|------|
-|United States	|Home/Shop by Brand/YouTube/	|555726|
-|United Kingdom	|Home/Shop by Brand/YouTube/	|151982|
-|India	|Home/Shop by Brand/YouTube/	|150793|
-|Germany	|Home/Shop by Brand/YouTube/	|77108|
-|Canada	|Home/Shop by Brand/YouTube/	|74128|
-|Australia	|Home/Shop by Brand/YouTube/	|54534|
-|France	|Home/Shop by Brand/YouTube/	|28949|
-|Netherlands	|Home/Shop by Brand/YouTube/	|28594|
-|Italy	|Home/Shop by Brand/YouTube/	|28319|
-|Japan	|Home/Accessories/Fun/	|26280|
-
-
-Query for city:
+Query for City:
 
 ```
 WITH all_sessions_clean AS (
@@ -187,7 +174,26 @@ LIMIT 10;
 
 Answer:
 
-Patern in top 10 cities by the number of orders by product category shows that the most popular category of products was "Home/Nest/Nest-USA/".
+**Country**
+
+In top 10 countries the most popular product group was 'Home/Shop by Brand/YouTube/'.
+
+Country	 |Product Category	|Sum of Ordered Quantity
+|--------------|---------------------------|------|
+|United States	|Home/Shop by Brand/YouTube/	|555726|
+|United Kingdom	|Home/Shop by Brand/YouTube/	|151982|
+|India	|Home/Shop by Brand/YouTube/	|150793|
+|Germany	|Home/Shop by Brand/YouTube/	|77108|
+|Canada	|Home/Shop by Brand/YouTube/	|74128|
+|Australia	|Home/Shop by Brand/YouTube/	|54534|
+|France	|Home/Shop by Brand/YouTube/	|28949|
+|Netherlands	|Home/Shop by Brand/YouTube/	|28594|
+|Italy	|Home/Shop by Brand/YouTube/	|28319|
+|Japan	|Home/Accessories/Fun/	|26280|
+
+**City**
+
+Patern in top 10 cities by the number of orders by product category shows that the most popular category of products was 'Home/Nest/Nest-USA/'.
 
 |City	 |Product Category	|Sum of Ordered Quantity|
 |-------------|---------------------|---------------|
@@ -209,11 +215,121 @@ Patern in top 10 cities by the number of orders by product category shows that t
 
 SQL Queries:
 
+Query for Country:
+```
+WITH all_sessions_clean AS (
+    SELECT 
+        CASE
+            WHEN als.country = '(not set)' THEN NULL
+            ELSE als.country
+        END AS country,
+        CASE
+            WHEN als.v2productname = '(not set)' THEN NULL
+            ELSE als.v2productname
+        END AS v2productname,
+        als.productsku
+    FROM all_sessions AS als
+),
+total_orders_by_product AS (
+    SELECT 
+        country, 
+        v2productname, 
+        SUM(p.orderedquantity) AS ordered_quantity_sum,
+        ROW_NUMBER() OVER (PARTITION BY country ORDER BY SUM(p.orderedquantity) DESC) AS rn
+    FROM all_sessions_clean AS alc
+    JOIN products AS p ON p.sku = alc.productsku
+    WHERE 
+        alc.v2productname IS NOT NULL
+        AND alc.country IS NOT NULL
+        AND p.orderedquantity > 0
+    GROUP BY alc.country, alc.v2productname
+)
+SELECT 
+    country AS "Country",
+    v2productname AS " Product Name",
+    ordered_quantity_sum AS "Sum of Ordered Quantity"
+FROM total_orders_by_product
+WHERE rn = 1
+ORDER BY ordered_quantity_sum DESC
+LIMIT 10;
+```
 
+Query for City:
+
+```
+WITH all_sessions_clean AS (
+    SELECT 
+        CASE
+            WHEN als.city = '(not set)' THEN NULL
+            WHEN als.city = 'not available in demo dataset' THEN NULL
+            ELSE als.city
+        END AS city,
+        CASE
+            WHEN als.v2productname = '(not set)' THEN NULL
+            ELSE als.v2productname
+        END AS v2productname,
+        als.productsku
+    FROM all_sessions AS als
+),
+total_orders_by_product AS (
+    SELECT 
+        city, 
+        v2productname, 
+        SUM(p.orderedquantity) AS ordered_quantity_sum,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY SUM(p.orderedquantity) DESC) AS rn
+    FROM all_sessions_clean AS alc
+    JOIN products AS p ON p.sku = alc.productsku
+    WHERE 
+        alc.v2productname IS NOT NULL
+        AND alc.city IS NOT NULL
+        AND p.orderedquantity > 0
+    GROUP BY alc.city, alc.v2productname
+)
+SELECT 
+    city AS "City",
+    v2productname AS "Product name",
+    ordered_quantity_sum AS "Sum of Ordered Quantity"
+FROM total_orders_by_product
+WHERE rn = 1
+ORDER BY ordered_quantity_sum DESC
+LIMIT 10;
+```
 
 Answer:
 
+**Country**
 
+When we examine the rankings of the top ten countries based on the best-selling product, 'YouTube Custom Decals' emerges as the top-selling product in seven out of ten countries. However, it is important to note that in terms of the sheer quantity of products sold, 'Google Kick Ball' surpasses 'YouTube Custom Decals' by a significant margin (selling more than the combined sales of 'YouTube Custom Decals').
+
+|Country	 |Product Category	|Sum of Ordered Quantity|
+|----------|------------|----------|
+|United States	|Google Kick Ball	|364080|
+|India	|YouTube Custom Decals	|83292|
+|United Kingdom	|YouTube Custom Decals	|49218|
+|Germany	|YouTube Custom Decals	|34074|
+|Canada	|YouTube Custom Decals	|30288|
+|France	|YouTube Custom Decals	|18930|
+|Australia	|YouTube Custom Decals	|18930|
+|Romania	|YouTube Custom Decals	|18930|
+|Ireland	|Google Kick Ball	|15170|
+|Chile	|Google Kick Ball	|15170|
+
+**City**
+
+'Google Kick Bal' was the top-selling product in most of the cities when we look at the first ten cities buy the quantity of product ordered. However, it is noteworthy that the product with the highest overall sales volume is 'Nest Cam Indoor Security Camera - USA'.
+
+|City	|Product name	|Sum of Ordered Quantity|
+|-------------|-------------------------|------|
+|Mountain View	|Nest Cam Indoor Security Camera - USA	|51336|
+|New York	|Google Kick Ball	|30340|
+|San Francisco	|Google Kick Ball	|30340|
+|Chicago	|Google Kick Ball	|30340|
+|Palo Alto	|Nest Cam Outdoor Security Camera - USA	|19033|
+|Sunnyvale	|Nest Cam Outdoor Security Camera - USA	|16314|
+|Kirkland	|Google Kick Ball	|15170|
+|Moscow	|Google Kick Ball	|15170|
+|Los Angeles	|Google Kick Ball	|15170|
+|Council Bluffs	|Google Kick Ball	|15170|
 
 
 
