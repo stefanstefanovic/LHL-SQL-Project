@@ -178,3 +178,60 @@ ADD FOREIGN KEY (productsku) REFERENCES products(sku);
 
 ALTER TABLE sales_by_sku 
 ADD FOREIGN KEY (productsku) REFERENCES products(sku);
+
+--to connect data i had to add productSKU that don't exist to the 
+--SKU in products table
+
+INSERT INTO products (sku)
+SELECT DISTINCT productsku
+FROM sales_by_sku
+WHERE productsku NOT IN (SELECT sku FROM products);
+
+--Added primary key to all_sessions table
+ALTER TABLE all_sessions
+ADD COLUMN session_id SERIAL;
+
+UPDATE all_sessions
+SET session_id = DEFAULT;
+
+ALTER TABLE all_sessions
+ALTER COLUMN session_id SET NOT NULL,
+ADD PRIMARY KEY (session_id);
+
+--Added primary key to analytics table
+
+ALTER TABLE analytics
+ADD COLUMN analytics_id SERIAL;
+
+UPDATE analytics
+SET analytics_id = DEFAULT;
+
+ALTER TABLE analytics
+ALTER COLUMN analytics_id SET NOT NULL,
+ADD PRIMARY KEY (analytics_id);
+
+--Added primary key to sales_by_sku table
+
+ALTER TABLE sales_by_sku
+ADD COLUMN sales_by_sku_id SERIAL;
+
+UPDATE sales_by_sku
+SET sales_by_sku_id = DEFAULT;
+
+ALTER TABLE sales_by_sku
+ALTER COLUMN sales_by_sku_id SET NOT NULL,
+ADD PRIMARY KEY (sales_by_sku_id);
+
+--added values to products table in the column SKU, 
+--that can be found in all_sessions table
+
+INSERT INTO products (sku)
+SELECT DISTINCT productsku
+FROM all_sessions
+WHERE productsku NOT IN (SELECT sku FROM products);
+
+--linked products and all_session
+
+ALTER TABLE all_sessions 
+ADD FOREIGN KEY (productsku) REFERENCES products(sku);
+
