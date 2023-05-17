@@ -53,9 +53,9 @@ ORDER BY transaction_revenue DESC;
 ```
 
 3. Ensured data consistency, validating data types, formatting, and decimal placements for accuracy and standardization
-I carefully reviewed the outputs by utilizing the ORDER BY clause and visually inspected them for any unusual or unexpected patterns.
+- I carefully reviewed the outputs by utilizing the ORDER BY clause and visually inspected them for any unusual or unexpected patterns.
 
-4. Conducted outlier analysis, identifying and investigating any data points that deviate significantly from the expected patterns or ranges.
+4. Conducted outlier analysis, identifying and investigating any data points that deviate significantly from the expected patterns or ranges
 
 ```
 SELECT 
