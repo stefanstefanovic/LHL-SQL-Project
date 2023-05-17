@@ -102,12 +102,39 @@ Netherlands	|Organic Search	|108
 Italy	|Organic Search	|105
 
 
-## Question 4: What was the average time visitor spent on the page by Product Category?
+## Question 4: What was the number of unique visits by month? Is there any pattern?
 
 ### SQL Queries:
 
+```
+SELECT 
+    EXTRACT(YEAR FROM date) AS "Year",
+    TO_CHAR(DATE_TRUNC('month', date), 'Month') AS "Month",
+    COUNT(DISTINCT fullvisitorid) AS "Number of Unique Visits"
+FROM all_sessions
+WHERE date < '08-01-2017' --removed August since there is only August 1st in table
+GROUP BY EXTRACT(YEAR FROM date), DATE_TRUNC('month', date)
+ORDER BY EXTRACT(YEAR FROM date), DATE_TRUNC('month', date);
+```
+
 ### Answer:
 
+The month with the highest number of visits was August 2016, recording 1837 unique visitors. In contrast, October of the same year had the lowest number of visits, with 966 visits.
+
+Year	|Month	|Number of Unique Visits
+---|---|---
+2016	|August   	|1837
+2016	|September	|1473
+2016	|October  	|966
+2016	|November 	|1082
+2016	|December 	|1180
+2017	|January  	|1024
+2017	|February 	|1048
+2017	|March    	|1058
+2017	|April    	|1061
+2017	|May      	|1209
+2017	|June     	|1138
+2017	|July     	|1251
 
 
 Question 5: 
