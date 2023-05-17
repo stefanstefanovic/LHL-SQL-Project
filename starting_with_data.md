@@ -30,11 +30,33 @@ The product that received the highest number of views on this platform, with nea
 |Google Men's 100% Cotton Short Sleeve Hero Tee Black	|173|
 
 
-## Question 2: 
+## Question 2:  What were the main sources that brought traffic to the website?
 
 ### SQL Queries:
 
+```
+SELECT 
+	channelgrouping AS "Channel Groupings",
+	COUNT(DISTINCT(fullvisitorid)) AS "Number of Unique Visits",
+	ROUND(COUNT(DISTINCT(fullvisitorid)) / SUM(COUNT(DISTINCT(fullvisitorid))) OVER () * 100, 2) AS "Rate of Unique Visits by Channel Grouping"
+FROM all_sessions
+GROUP BY channelgrouping
+ORDER BY "Number of Unique Visits" DESC;
+```
+
 ### Answer:
+
+More than half of the traffic (58%) came through Organic Search, which refers to traffic from search engine results such as Google or Bing. Approximately one-fifth of the traffic originated from an unknown referrer or source. Paid Search accounted for only 3% of the total traffic.
+
+|Channel Groupings	|Number of Unique Visits	|Rate of Unique Visits by Channel Grouping|
+|--------|---------|-------|
+|Organic Search	|8207	|57.51|
+|Direct	|2805	|19.66|
+|Referral	|2419	|16.95|
+|Paid Search	|470	|3.29|
+|Affiliates	|245	|1.72|
+|Display	|119	|0.83|
+|(Other)	|5	|0.04|
 
 
 
