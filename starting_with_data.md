@@ -59,16 +59,50 @@ More than half of the traffic (58%) came through Organic Search, which refers to
 |(Other)	|5	|0.04|
 
 
+## Question 3: Is there any difference in the primary traffic source on the platform between countries?
 
-## Question 3: 
 
 ### SQL Queries:
 
+```
+WITH total_number_of_unique_visits AS (
+    SELECT 
+        country, 
+        channelgrouping, 
+        COUNT(DISTINCT(fullvisitorid)) AS "Number of Unique Visits",
+        ROW_NUMBER() OVER (PARTITION BY country ORDER BY COUNT(DISTINCT(fullvisitorid)) DESC) AS rn
+    FROM all_sessions
+	WHERE country NOT IN ('(not set)')
+    GROUP BY country, channelgrouping
+)
+SELECT 
+    country AS "Country",
+    channelgrouping AS "Channel Groupings",
+    "Number of Unique Visits"
+FROM total_number_of_unique_visits
+WHERE rn = 1 AND "Number of Unique Visits" > 10
+ORDER BY "Number of Unique Visits" DESC;
+```
+
 ### Answer:
 
+Out of the 56 countries with more than ten visits, Organic Search was the primary source of traffic in all cases except for two instances—Romania and Finland. In these countries, Direct traffic emerged as the primary source, driving the majority of visits.
+
+Country	|Channel Groupings	|Number of Unique Visits
+---|----|----
+United States	|Organic Search	|4008
+United Kingdom	|Organic Search	|509
+India	|Organic Search	|489
+Canada	|Organic Search	|455
+Germany	|Organic Search	|232
+Australia	|Organic Search	|174
+France	|Organic Search	|148
+Japan	|Organic Search	|123
+Netherlands	|Organic Search	|108
+Italy	|Organic Search	|105
 
 
-## Question 4: 
+## Question 4: What was the average time visitor spent on the page by Product Category?
 
 ### SQL Queries:
 
