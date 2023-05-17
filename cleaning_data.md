@@ -137,6 +137,12 @@ SELECT
     AVG(stocklevel)
 FROM products
 
+SELECT 
+    MIN(orderedquantity) as min_range, 
+    MAX(orderedquantity) AS max_range, 
+    AVG(orderedquantity)
+FROM products
+
 SELECT *
 FROM products
 ORDER BY orderedquantity DESC
@@ -166,4 +172,9 @@ ADD PRIMARY KEY (sku);
 --Added foreign key to sales_report table
 
 ALTER TABLE sales_report
+ADD FOREIGN KEY (productsku) REFERENCES products(sku);
+
+--Added foreign key to sales_by_sku  table
+
+ALTER TABLE sales_by_sku 
 ADD FOREIGN KEY (productsku) REFERENCES products(sku);
